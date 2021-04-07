@@ -13,16 +13,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpSpeed = 5f;
 
     [Header("Jump Properties")]
-    [SerializeField] float gravityModifier = 2.5f;
+    [SerializeField] float gravityMultiplier = 2.5f;
 
     [Header("Misc Attributes")]
     [SerializeField] float deadZone = .1f;
     [SerializeField] float runDelay = 1.5f; // seconds until run activates
 
     [Header("Test Mats, ToBeRemoved")]
-    [SerializeField] Material redMat;
     [SerializeField] Material greenMat;
     [SerializeField] Material blueMat;
+    [SerializeField] Material redMat;
+    [SerializeField] Material yellowMat;
+    [SerializeField] Material purpleMat;
     [SerializeField] MeshRenderer meshRenderer;
 
     public bool isGrounded { get { return _isGrounded; } }
@@ -37,12 +39,21 @@ public class PlayerController : MonoBehaviour
 
     float horizontalMove;
     float verticalMove;
+    float movementMultiplier;
+    float gravityModifier;
+
+    Vector3 moveDir;
+    Vector3 movement;
+
+    Skill activeSkill = null;
 
     public enum PlayerState
     {
         NORMAL,
         RUNNING,
         JUMPING,
+        LOCKINPUT,   // freeze of player movement inputs (jump, movement), rotation is still okay
+        FREEZE,         // full freeze of player inputs (jump, movement, skill activations)
     }
 
     PlayerState currentState = PlayerState.NORMAL;
@@ -52,9 +63,17 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         cam = Camera.main;
+
         joystick = GameObject.Find("Fixed Joystick").GetComponent<Joystick>();
-        joystick.DeadZone = deadZone;
         jumpButton = GameObject.Find("JumpButton").GetComponent<Button>();
+
+        joystick.DeadZone = deadZone;
+
+        movementMultiplier = moveSpeed;
+        gravityModifier = gravityMultiplier;
+
+        moveDir = Vector3.zero;
+        movement = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -66,46 +85,44 @@ public class PlayerController : MonoBehaviour
         horizontalMove = joystick.Horizontal;
         verticalMove = joystick.Vertical;
 
-        Vector3 movement = (camForward * verticalMove + camRight * horizontalMove).normalized;
-
-        switch(currentState)
+        if (currentState != PlayerState.LOCKINPUT)
         {
-            default:
-            case PlayerState.NORMAL:
-                movement *= moveSpeed;
-                meshRenderer.material = greenMat;
-                break;
-            case PlayerState.RUNNING:
-                movement *= runSpeed;
-                meshRenderer.material = blueMat;
-                break;
-            case PlayerState.JUMPING:
-                movement *= jumpSpeed;
-                meshRenderer.material = redMat;
-                break;
+            moveDir = (camForward * verticalMove + camRight * horizontalMove).normalized;
         }
 
-        rb.velocity = movement + Vector3.up * rb.velocity.y;
+        if (currentState != PlayerState.FREEZE)
+        {
+            movement = moveDir * movementMultiplier;
+        }
+        else
+        {
+            movement = Vector3.zero;
+        }
+
+        if (currentState != PlayerState.FREEZE && movement.sqrMagnitude > 0)  // player faces direction of movement if moving
+        {
+            transform.rotation = Quaternion.LookRotation(moveDir);
+        }
+
+        rb.velocity = movement + Vector3.up * rb.velocity.y;    // include y-velocity in player movement
 
         LayerMask terrainMask = LayerMask.GetMask("Terrain");
-
-        if (movement.sqrMagnitude > 0)
-        {
-            transform.rotation = Quaternion.LookRotation(movement.normalized);
-        }
 
         if (Physics.OverlapBox(transform.position - Vector3.up * 1, new Vector3(.5f, .05f, .5f), Quaternion.identity, terrainMask).Length > 0)
         {
             _isGrounded = true;
             if (currentState == PlayerState.JUMPING)
             {
-                currentState = PlayerState.NORMAL;
+                TransitionState(PlayerState.NORMAL);
             }
         }
         else
         {
             _isGrounded = false;
-            currentState = PlayerState.JUMPING;
+            if (currentState != PlayerState.LOCKINPUT)
+            {
+                TransitionState(PlayerState.JUMPING);
+            }
         }
 
         if (currentState == PlayerState.JUMPING && rb.velocity.y <= 0)
@@ -121,7 +138,7 @@ public class PlayerController : MonoBehaviour
         {
             if (currentState == PlayerState.RUNNING)
             {
-                currentState = PlayerState.NORMAL;
+                TransitionState(PlayerState.NORMAL);
             }
         }
         else
@@ -129,10 +146,26 @@ public class PlayerController : MonoBehaviour
             timer += Time.deltaTime;
             if (timer >= runDelay)
             {
-                currentState = PlayerState.RUNNING;
+                TransitionState(PlayerState.RUNNING);
                 timer = 0f;
             }
         }
+    }
+
+    public void SetMoveDir(Vector3 dir)
+    {
+        moveDir = dir;
+    }
+
+    public void SetMoveSpeed(float newSpeed)
+    {
+        movementMultiplier = newSpeed;
+    }
+
+    public void TogglePlayerUseGravity(bool gravityOn)
+    {
+        rb.useGravity = gravityOn;
+        gravityModifier = (gravityOn) ? gravityMultiplier : 0f;
     }
 
     private void OnDrawGizmos()
@@ -145,6 +178,33 @@ public class PlayerController : MonoBehaviour
         if (_isGrounded)
         {
             rb.velocity += Vector3.up * jumpSpeed;
+        }
+    }
+
+    public void TransitionState(PlayerState newState)
+    {
+        currentState = newState;
+        switch (currentState)
+        {
+            default:
+            case PlayerState.NORMAL:
+                meshRenderer.material = greenMat;
+                movementMultiplier = moveSpeed;
+                break;
+            case PlayerState.RUNNING:
+                meshRenderer.material = blueMat;
+                movementMultiplier = runSpeed;
+                break;
+            case PlayerState.JUMPING:
+                meshRenderer.material = redMat;
+                movementMultiplier = jumpSpeed;
+                break;
+            case PlayerState.LOCKINPUT:
+                meshRenderer.material = yellowMat;
+                break;
+            case PlayerState.FREEZE:
+                meshRenderer.material = purpleMat;
+                break;
         }
     }
 }
