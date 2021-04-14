@@ -23,7 +23,7 @@ public class PlayerCombat : MonoBehaviour
     private void Start()
     {
         playerControl = GetComponent<PlayerController>();
-        skillOne.loadPlayer(playerControl);
+        skillOne.GetPlayerController(playerControl);
     }
 
     public void UseSkillOffCooldown(int index)
@@ -54,6 +54,9 @@ public class PlayerCombat : MonoBehaviour
 
     IEnumerator UseSkill(Skill skill, bool useScaledTime)
     {
+        GameController.instance.SlowTime(skill.slowDuration, skill.slowPercent, true);
+        yield return new WaitForSecondsRealtime(skill.slowDuration);
+
         skill.ActivateSkill();
         StartCooldown(skill.cooldown);
         if (useScaledTime)

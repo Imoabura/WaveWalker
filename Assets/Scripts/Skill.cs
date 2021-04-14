@@ -9,14 +9,20 @@ public abstract class Skill : ScriptableObject
     [SerializeField] protected bool _lockMovement = true;
     [SerializeField] protected float _skillDuration = 0f;
 
+    [Header("Time Slow Properties")]
+    [SerializeField] protected float _slowDuration = .1f;
+    [SerializeField] protected float _slowPercent = .5f;
+
     public string skillName { get { return _skillName; } }
     public float cooldown { get { return _cooldown; } }
     public bool lockMovement { get { return _lockMovement; } }
     public float skillDuration { get { return _skillDuration; } }
+    public float slowDuration { get { return _slowDuration; } }
+    public float slowPercent { get { return _slowPercent; } }
 
     protected PlayerController playerControl = null;
 
-    public void loadPlayer(PlayerController pc)
+    public void GetPlayerController(PlayerController pc)
     {
         playerControl = pc;
     }

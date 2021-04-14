@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDir;
     Vector3 movement;
 
+    Vector3 camForward;
+    Vector3 camRight;
+
     Skill activeSkill = null;
 
     public enum PlayerState
@@ -74,14 +77,14 @@ public class PlayerController : MonoBehaviour
 
         moveDir = Vector3.zero;
         movement = Vector3.zero;
+
+        camForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
+        camRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 camForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
-        Vector3 camRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
-
         horizontalMove = joystick.Horizontal;
         verticalMove = joystick.Vertical;
 
@@ -168,9 +171,23 @@ public class PlayerController : MonoBehaviour
         gravityModifier = (gravityOn) ? gravityMultiplier : 0f;
     }
 
+    public void SetPhysicsLayer(int layer)
+    {
+        gameObject.layer = layer;
+        if (transform.childCount > 0)
+        {
+            for (int i = 0; i < transform.childCount; ++i)
+            {
+                transform.GetChild(i).gameObject.layer = layer;
+            }
+        }
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawCube(transform.position - Vector3.up * 1, new Vector3(.5f, .05f, .5f));
+        Gizmos.DrawWireSphere(transform.position, 0.5f);
+        Gizmos.DrawWireSphere(transform.position + transform.forward * (50 * .1f), 0.5f);
     }
 
     public void Jump()
@@ -183,6 +200,11 @@ public class PlayerController : MonoBehaviour
 
     public void TransitionState(PlayerState newState)
     {
+        if (currentState == newState)
+        {
+            return;
+        }
+
         currentState = newState;
         switch (currentState)
         {
@@ -190,6 +212,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.NORMAL:
                 meshRenderer.material = greenMat;
                 movementMultiplier = moveSpeed;
+                moveDir = (camForward * verticalMove + camRight * horizontalMove).normalized;
                 break;
             case PlayerState.RUNNING:
                 meshRenderer.material = blueMat;
@@ -206,5 +229,7 @@ public class PlayerController : MonoBehaviour
                 meshRenderer.material = purpleMat;
                 break;
         }
+
+        GameController.instance.onPlayerStateChangedCallback.Invoke(currentState);
     }
 }

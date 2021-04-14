@@ -48,7 +48,7 @@ public class TapInputManager : MonoBehaviour
                 if (timeElapsed <= tapTimeThreshold)
                 {
                     Vector2 touchPos = t.position;
-                    Debug.Log($"Tap Recorded @ {touchPos}; Time Elapsed: {timeElapsed}");
+                    //Debug.Log($"Tap Recorded @ {touchPos}; Time Elapsed: {timeElapsed}");
                 }
             }
         }
