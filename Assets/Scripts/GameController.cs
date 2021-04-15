@@ -37,10 +37,12 @@ public class GameController : MonoBehaviour
     [SerializeField] float timeBetweenEnemySpawns = 0f;
     [SerializeField] float timeBetweenRounds = 5f;
 
-    [SerializeField, Range(5, 20f)] float minXSpawn = 5f;
+    [SerializeField, Range(0, 5f)] float minXSpawn = 5f;
     [SerializeField, Range(5, 20f)] float maxXSpawn = 20f;
-    [SerializeField, Range(5, 20f)] float minZSpawn = 5f;
+    [SerializeField, Range(0, 5f)] float minZSpawn = 5f;
     [SerializeField, Range(5, 20f)] float maxZSpawn = 20f;
+
+    Vector3 minSpawnRange = Vector3.zero;
 
     int currentRound = 0;
     int enemiesAlive = 0;
@@ -63,6 +65,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         currentState = GameState.GAME_START;
+        minSpawnRange = new Vector3(minXSpawn, 0, minZSpawn);
     }
 
     // Update is called once per frame
@@ -165,23 +168,24 @@ public class GameController : MonoBehaviour
 
     IEnumerator SpawnEnemies(int enemyCount, float timeBetweenSpawns)
     {
+        Debug.Log($"maxX: {maxXSpawn} / minX: {minXSpawn} / maxZ: {maxZSpawn} / minZ: {minZSpawn}");
+
         Random.InitState(System.DateTime.Now.Millisecond);
 
         for (int i = 0; i < enemyCount; ++i)
         {
-            float xPos = Random.Range(-maxXSpawn, maxXSpawn);
-            if (Mathf.Pow(xPos, 2) < Mathf.Pow(minXSpawn, 2))
+            float xPos = Mathf.Lerp(-maxXSpawn, maxXSpawn, Random.Range(0, 1f));
+
+            float zPos = Mathf.Lerp(-maxZSpawn, maxZSpawn, Random.Range(0, 1f));
+
+            Vector3 pos = new Vector3(xPos, 0, zPos);
+
+            if (pos.sqrMagnitude < minSpawnRange.sqrMagnitude)
             {
-                xPos = (xPos < 0) ? Mathf.Clamp(xPos, -maxXSpawn, -minXSpawn) : Mathf.Clamp(xPos, minXSpawn, maxXSpawn);
+                pos = pos.normalized * minSpawnRange.magnitude;
             }
 
-            float zPos = Random.Range(-maxZSpawn, maxZSpawn);
-            if (Mathf.Pow(zPos, 2) < Mathf.Pow(minZSpawn, 2))
-            {
-                zPos = (zPos < 0) ? Mathf.Clamp(zPos, -maxZSpawn, -minZSpawn) : Mathf.Clamp(zPos, minZSpawn, maxZSpawn);
-            }
-
-            SpawnEnemy(new Vector3(xPos, .5f, zPos));
+            SpawnEnemy(pos + Vector3.up * .5f);
 
             if (enemiesAlive >= enemyCount)
             {

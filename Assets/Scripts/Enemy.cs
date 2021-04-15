@@ -48,7 +48,7 @@ public class Enemy : MonoBehaviour
         }
         Debug.Log("Dead!");
         GameController.instance.onEnemyDestroyedCallback.Invoke();
-        Destroy(this.gameObject);
+        Destroy(this.transform.parent.gameObject);
     }
 
     IEnumerator FlashDamage()
@@ -56,7 +56,7 @@ public class Enemy : MonoBehaviour
         for (int i = 0; i < 4; ++i)
         {
             meshRenderer.material = (i % 2 == 0) ? hitMat : regularMat;
-            yield return new WaitForSeconds(.15f);
+            yield return new WaitForSecondsRealtime(.15f);
         }
         meshRenderer.material = regularMat;
     }

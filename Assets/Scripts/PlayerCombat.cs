@@ -34,10 +34,10 @@ public class PlayerCombat : MonoBehaviour
             {
                 default:
                 case 0:
-                    StartCoroutine(UseSkill(skillOne, true));
+                    StartCoroutine(UseSkill(skillOne, true, true));
                     break;
                 case 1:
-                    // skill 2
+                    StartCoroutine(UseSkill(skillTwo, true, false));
                     break;
             }
         }
@@ -52,10 +52,13 @@ public class PlayerCombat : MonoBehaviour
         StartCoroutine(Cooldown(timeSlowDuration + attackCooldown));
     }
 
-    IEnumerator UseSkill(Skill skill, bool useScaledTime)
+    IEnumerator UseSkill(Skill skill, bool useScaledTime, bool waitForSlowTime)
     {
         GameController.instance.SlowTime(skill.slowDuration, skill.slowPercent, true);
-        yield return new WaitForSecondsRealtime(skill.slowDuration);
+        if (waitForSlowTime)
+        {
+            yield return new WaitForSecondsRealtime(skill.slowDuration);
+        }
 
         skill.ActivateSkill();
         StartCooldown(skill.cooldown);
