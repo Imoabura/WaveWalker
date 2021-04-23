@@ -122,6 +122,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8077913046331559316}
+  - component: {fileID: 7592410722224495211}
+  - component: {fileID: -3763648660136700536}
+  - component: {fileID: 6462265165739987756}
   m_Layer: 8
   m_Name: EnemyDummy
   m_TagString: Enemy
@@ -144,3 +147,56 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &7592410722224495211
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077913046331559317}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &-3763648660136700536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077913046331559317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fbd1e9ae121b6847885e97c9c196fd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectionRange: 15
+  stalkDistance: 10
+  avoidanceRange: 3
+  avoidTargetRange: 8
+  moveSpeed: 5
+  stalkSpeed: 3
+  avoidClusteringWeight: 1
+  desiredMoveDirWeight: 1
+  avoidTargetWeight: 2
+--- !u!114 &6462265165739987756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077913046331559317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b855f03c271c624a9d33b72c2e41816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackRange: 10
+  tooCloseRange: 5
+  projectilePrefab: {fileID: 4675458005224134726, guid: 003c736b484325d4e8de1b459f347dcc, type: 3}
+  attackCooldown: 2

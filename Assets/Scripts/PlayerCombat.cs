@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [SerializeField] int damage = 1;
-    [SerializeField] float atkRange = .5f;
+    [Header("Player Properties")]
+    [SerializeField] int maxHealth = 10;
+
+    [Header("Other Properties")]
     [SerializeField] float dashDistance = 5f;
     [SerializeField] float timeSlowPercent = .5f;
     [SerializeField] float timeSlowDuration = 1f;
@@ -15,30 +17,47 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] Skill skillOne = null;
     [SerializeField] Skill skillTwo = null;
 
+    List<Skill> skills = new List<Skill>();
+
     Coroutine timeSlowCoroutine = null;
     PlayerController playerControl = null;
 
-    bool attackReady = true;
+    int currentHealth;
+
+    public delegate void OnDamageTaken(int value);
+    public OnDamageTaken onDamageTakenCallback;
+
+    public delegate void OnCooldown(int index, float fillAmount);
+    public OnCooldown onCooldownCallback;
+
+    public int totalHealth { get { return maxHealth; } }
+    public int health { get { return currentHealth; } }
 
     private void Start()
     {
         playerControl = GetComponent<PlayerController>();
         skillOne.GetPlayerController(playerControl);
+        currentHealth = maxHealth;
+
+        skills.Add(skillOne);
+        skills.Add(skillTwo);
     }
 
     public void UseSkillOffCooldown(int index)
     {
-        if (attackReady)
+        if (index > skills.Count || index < 0)
         {
-            switch (index)
+            return;
+        }
+        if (skills[index].attackReady)
+        {
+            if (index == 0)
             {
-                default:
-                case 0:
-                    StartCoroutine(UseSkill(skillOne, true, true));
-                    break;
-                case 1:
-                    StartCoroutine(UseSkill(skillTwo, true, false));
-                    break;
+                StartCoroutine(UseSkill(skills[index], index, true, true));
+            }
+            else if (index == 1)
+            {
+                StartCoroutine(UseSkill(skills[index], index, true, false));
             }
         }
         else
@@ -47,12 +66,12 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    void StartCooldown(float duration)
+    void StartCooldown(Skill skill, int index, float duration)
     {
-        StartCoroutine(Cooldown(timeSlowDuration + attackCooldown));
+        StartCoroutine(Cooldown(skill, index, timeSlowDuration + attackCooldown));
     }
 
-    IEnumerator UseSkill(Skill skill, bool useScaledTime, bool waitForSlowTime)
+    IEnumerator UseSkill(Skill skill, int index, bool useScaledTime, bool waitForSlowTime)
     {
         GameController.instance.SlowTime(skill.slowDuration, skill.slowPercent, true);
         if (waitForSlowTime)
@@ -61,7 +80,7 @@ public class PlayerCombat : MonoBehaviour
         }
 
         skill.ActivateSkill();
-        StartCooldown(skill.cooldown);
+        StartCooldown(skill, index, skill.cooldown);
         if (useScaledTime)
         {
             yield return new WaitForSeconds(skill.skillDuration);
@@ -73,11 +92,20 @@ public class PlayerCombat : MonoBehaviour
         skill.DeactivateSkill();
     }
 
-    IEnumerator Cooldown(float duration)
+    IEnumerator Cooldown(Skill skill, int index, float duration)
     {
-        attackReady = false;
-        yield return new WaitForSecondsRealtime(duration);
-        attackReady = true;
+        float timer = 0f;
+        skill.SetReady(false);
+        onCooldownCallback.Invoke(index, 1);
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float fillAmount = timer / duration;
+            onCooldownCallback.Invoke(index, 1 - fillAmount);
+            yield return null;
+        }
+        onCooldownCallback.Invoke(index, 0);
+        skill.SetReady(true);
     }
 
     IEnumerator SlowDownTime(float duration)
@@ -95,5 +123,21 @@ public class PlayerCombat : MonoBehaviour
     private void OnDrawGizmos()
     {
         
+    }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            Die();
+        }
+        onDamageTakenCallback.Invoke(currentHealth);
+    }
+
+    void Die()
+    {
+        GameController.instance.TransitionState(GameController.GameState.GAME_OVER);
     }
 }

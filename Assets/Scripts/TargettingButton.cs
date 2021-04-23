@@ -36,7 +36,7 @@ public class TargettingButton : MonoBehaviour
         target.TakeDamage(damage);
         if (pressedRoutine == null)
         {
-            pressedRoutine = StartCoroutine(DestroyUI(.3f));
+            pressedRoutine = StartCoroutine(DestroyUI(.15f));
         }
     }
 

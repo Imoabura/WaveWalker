@@ -162,13 +162,13 @@ public class GameController : MonoBehaviour
     void SpawnEnemy(Vector3 position)
     {
         GameObject enemy = Instantiate(enemyDummyPrefab, position, Quaternion.identity);
-        Debug.Log($"Enemy spawned @ {position}");
+        //Debug.Log($"Enemy spawned @ {position}");
         enemiesAlive++;
     }
 
     IEnumerator SpawnEnemies(int enemyCount, float timeBetweenSpawns)
     {
-        Debug.Log($"maxX: {maxXSpawn} / minX: {minXSpawn} / maxZ: {maxZSpawn} / minZ: {minZSpawn}");
+        //Debug.Log($"maxX: {maxXSpawn} / minX: {minXSpawn} / maxZ: {maxZSpawn} / minZ: {minZSpawn}");
 
         Random.InitState(System.DateTime.Now.Millisecond);
 

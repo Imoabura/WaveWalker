@@ -8,6 +8,7 @@ public abstract class Skill : ScriptableObject
     [SerializeField] protected float _cooldown = 1f;
     [SerializeField] protected bool _lockMovement = true;
     [SerializeField] protected float _skillDuration = 0f;
+    [SerializeField] protected bool _attackReady = true;
 
     [Header("Time Slow Properties")]
     [SerializeField] protected float _slowDuration = .1f;
@@ -21,6 +22,13 @@ public abstract class Skill : ScriptableObject
     public float slowPercent { get { return _slowPercent; } }
 
     protected PlayerController playerControl = null;
+
+    public bool attackReady { get { return _attackReady; } }
+
+    public void SetReady(bool isReady)
+    {
+        _attackReady = isReady;
+    }
 
     public void GetPlayerController(PlayerController pc)
     {
