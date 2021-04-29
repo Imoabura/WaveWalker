@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            other.transform.parent.GetComponent<PlayerCombat>().TakeDamage(1);
+            other.transform.parent.GetComponent<PlayerCombat>().TakeDamage(dmg);
             StopCoroutine(selfDestruct);
             Destroy(this.gameObject);
         }

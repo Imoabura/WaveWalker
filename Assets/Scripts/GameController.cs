@@ -46,7 +46,6 @@ public class GameController : MonoBehaviour
 
     int currentRound = 0;
     int enemiesAlive = 0;
-    bool isGameOver = false;
 
     GameState currentState;
 
@@ -204,7 +203,6 @@ public class GameController : MonoBehaviour
 
     void GameOver()
     {
-        isGameOver = true;
         StartCoroutine(StartGameOver());
     }
 

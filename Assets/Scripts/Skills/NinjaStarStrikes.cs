@@ -5,17 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ThrowStars", menuName = "Skills/ThrowingStars")]
 public class NinjaStarStrikes : Skill
 {
-    [SerializeField] GameObject targetUIPrefab = null;
+    [SerializeField] GameObject targetUIPrefab;
     [SerializeField] int dmg = 1;
-    GameObject canvasUI = null;
-
-    private void OnEnable()
-    {
-        canvasUI = GameObject.Find("Canvas");
-    }
+    GameObject canvasUI;
 
     public override void ActivateSkill()
     {
+        if (canvasUI == null)
+            canvasUI = GameObject.Find("Canvas");
         GameController.instance.SlowTime(_slowDuration, _slowPercent, true);
         CreateUITargets();
     }
@@ -40,7 +37,7 @@ public class NinjaStarStrikes : Skill
             Vector3 screenPos = Camera.main.WorldToScreenPoint(candidates[i].transform.position);
             Debug.Log($"ScreenPos: {screenPos}");
             if (screenPos.x > 0 && screenPos.x <= Screen.width && screenPos.y > 0 && screenPos.y <= Screen.height)
-            {
+            {   
                 TargettingButton targetUI = Instantiate(targetUIPrefab, canvasUI.transform).GetComponent<TargettingButton>();
                 targetUI.gameObject.GetComponent<RectTransform>().position = screenPos;
                 targetUI.InitializeUI(this, candidates[i].GetComponentInChildren<Enemy>(), _skillDuration, dmg);

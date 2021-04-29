@@ -5,7 +5,6 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] int health = 5;
-    [SerializeField] int dmg = 1;
 
     [Header("TestMats")]
     [SerializeField] Material regularMat;

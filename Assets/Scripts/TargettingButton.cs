@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TargettingButton : MonoBehaviour
 {
+    [SerializeField] GameObject attackFX = null;
+
     Enemy target = null;
     Skill skill = null;
     int damage = 1;
@@ -34,6 +36,7 @@ public class TargettingButton : MonoBehaviour
     public void Targetted()
     {
         target.TakeDamage(damage);
+        Instantiate(attackFX, target.transform.position - Vector3.up * 1f, Quaternion.identity);
         if (pressedRoutine == null)
         {
             pressedRoutine = StartCoroutine(DestroyUI(.15f));

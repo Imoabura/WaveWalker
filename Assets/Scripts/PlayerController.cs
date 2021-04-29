@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Speeds")]
     [SerializeField] float moveSpeed = 10f;
     [SerializeField] float runSpeed = 15f;
-    [SerializeField] float airSpeed = 5f;
     [SerializeField] float jumpSpeed = 5f;
 
     [Header("Jump Properties")]
@@ -47,8 +46,6 @@ public class PlayerController : MonoBehaviour
 
     Vector3 camForward;
     Vector3 camRight;
-
-    Skill activeSkill = null;
 
     public enum PlayerState
     {

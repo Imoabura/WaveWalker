@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class GameUIController : MonoBehaviour
 {
-    [SerializeField] GameObject joystickParent = null;
     [SerializeField] GameObject buttonParent = null;
     [SerializeField] GameObject healthUI = null;
 

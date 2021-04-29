@@ -19,7 +19,6 @@ public class PlayerCombat : MonoBehaviour
 
     List<Skill> skills = new List<Skill>();
 
-    Coroutine timeSlowCoroutine = null;
     PlayerController playerControl = null;
 
     int currentHealth;
@@ -41,6 +40,11 @@ public class PlayerCombat : MonoBehaviour
 
         skills.Add(skillOne);
         skills.Add(skillTwo);
+
+        foreach(Skill s in skills)
+        {
+            s.SetReady(true);
+        }
     }
 
     public void UseSkillOffCooldown(int index)
