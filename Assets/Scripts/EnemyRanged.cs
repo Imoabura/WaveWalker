@@ -31,7 +31,7 @@ public class EnemyRanged : MonoBehaviour
 
             if (toTarget.sqrMagnitude > Mathf.Pow(tooCloseRange, 2) && toTarget.sqrMagnitude <= Mathf.Pow(attackRange, 2))
             {
-                GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.LookRotation(toTarget));
+                GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
                 projectile.GetComponent<Projectile>().InitializeProjectile(transform.forward);
                 StartCoroutine(StartCooldown(attackCooldown));
             }
