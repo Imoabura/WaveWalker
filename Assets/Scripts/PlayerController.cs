@@ -18,13 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float deadZone = .1f;
     [SerializeField] float runDelay = 1.5f; // seconds until run activates
 
-    [Header("Test Mats, ToBeRemoved")]
-    [SerializeField] Material greenMat;
-    [SerializeField] Material blueMat;
-    [SerializeField] Material redMat;
-    [SerializeField] Material yellowMat;
-    [SerializeField] Material purpleMat;
-    [SerializeField] MeshRenderer meshRenderer;
+    [Header("Other")]
+    [SerializeField] GameObject dashIndicator = null;
 
     public bool isGrounded { get { return _isGrounded; } }
     bool _isGrounded = false;
@@ -77,6 +72,8 @@ public class PlayerController : MonoBehaviour
 
         camForward = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z).normalized;
         camRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
+
+        dashIndicator.SetActive(false);
     }
 
     // Update is called once per frame
@@ -180,6 +177,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ShowIndicator(bool isVisible)
+    {
+        dashIndicator.SetActive(isVisible);
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawCube(transform.position - Vector3.up * 1, new Vector3(.5f, .05f, .5f));
@@ -207,23 +209,18 @@ public class PlayerController : MonoBehaviour
         {
             default:
             case PlayerState.NORMAL:
-                meshRenderer.material = greenMat;
                 movementMultiplier = moveSpeed;
                 moveDir = (camForward * verticalMove + camRight * horizontalMove).normalized;
                 break;
             case PlayerState.RUNNING:
-                meshRenderer.material = blueMat;
                 movementMultiplier = runSpeed;
                 break;
             case PlayerState.JUMPING:
-                meshRenderer.material = redMat;
                 movementMultiplier = jumpSpeed;
                 break;
             case PlayerState.LOCKINPUT:
-                meshRenderer.material = yellowMat;
                 break;
             case PlayerState.FREEZE:
-                meshRenderer.material = purpleMat;
                 break;
         }
 

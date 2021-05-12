@@ -17,7 +17,7 @@ MonoBehaviour:
   _lockMovement: 1
   _skillDuration: 0.1
   _attackReady: 1
-  _slowDuration: 0.5
+  _slowDuration: 0.75
   _slowPercent: 0.25
   dashSpeed: 50
   hitBoxOn: 1

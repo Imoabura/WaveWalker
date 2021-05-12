@@ -105,6 +105,8 @@ public class GameController : MonoBehaviour
     {
         float timeSlow = Mathf.Clamp(slowPercent, 0f, 1f);
         Time.timeScale = timeSlow;
+        StartCoroutine(PostProcessing.instance.BlackWhiteFlash(duration, .8f));
+        StartCoroutine(PostProcessing.instance.ColorFlash(duration / 10f, .5f));
         yield return new WaitForSecondsRealtime(duration);
         Time.timeScale = 1f;
         slowTimeCoroutine = null;

@@ -46,6 +46,15 @@ public class PlayerCombat : MonoBehaviour
             s.SetReady(true);
         }
     }
+    private void Update()
+    {
+        Debug.DrawRay(transform.position, transform.forward * dashDistance, Color.red);
+    }
+
+    private void OnDrawGizmos()
+    {
+
+    }
 
     public void UseSkillOffCooldown(int index)
     {
@@ -72,7 +81,8 @@ public class PlayerCombat : MonoBehaviour
 
     void StartCooldown(Skill skill, int index, float duration)
     {
-        StartCoroutine(Cooldown(skill, index, timeSlowDuration + attackCooldown));
+        //timeSlowDuration + attackCooldown
+        StartCoroutine(Cooldown(skill, index, duration));
     }
 
     IEnumerator UseSkill(Skill skill, int index, bool useScaledTime, bool waitForSlowTime)
@@ -80,11 +90,20 @@ public class PlayerCombat : MonoBehaviour
         GameController.instance.SlowTime(skill.slowDuration, skill.slowPercent, true);
         if (waitForSlowTime)
         {
+            playerControl.ShowIndicator(true);
             yield return new WaitForSecondsRealtime(skill.slowDuration);
+            playerControl.ShowIndicator(false);
         }
 
         skill.ActivateSkill();
         StartCooldown(skill, index, skill.cooldown);
+        for (int i = 0; i < skills.Count; ++i)  // set quick cooldown for everything else; ensure no other spells can be used in tandem
+        {
+            if (i != index)
+            {
+                StartCooldown(skills[i], i, .25f);
+            }
+        }
         if (useScaledTime)
         {
             yield return new WaitForSeconds(skill.skillDuration);
@@ -110,23 +129,6 @@ public class PlayerCombat : MonoBehaviour
         }
         onCooldownCallback.Invoke(index, 0);
         skill.SetReady(true);
-    }
-
-    IEnumerator SlowDownTime(float duration)
-    {
-        Time.timeScale = timeSlowPercent;
-        yield return new WaitForSecondsRealtime(duration);
-        Time.timeScale = 1f;
-    }
-
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, transform.forward * dashDistance, Color.red);
-    }
-
-    private void OnDrawGizmos()
-    {
-        
     }
 
     public void TakeDamage(int amount)
