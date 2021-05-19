@@ -6,18 +6,12 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] int health = 5;
 
-    [Header("TestMats")]
-    [SerializeField] Material regularMat;
-    [SerializeField] Material hitMat;
-
-    MeshRenderer meshRenderer;
-
     Coroutine hitRoutine = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+
     }
 
     // Update is called once per frame
@@ -33,10 +27,6 @@ public class Enemy : MonoBehaviour
         {
             Die();
         }
-        else
-        {
-            hitRoutine = StartCoroutine(FlashDamage());
-        }
     }
 
     public void Die()
@@ -48,15 +38,5 @@ public class Enemy : MonoBehaviour
         Debug.Log("Dead!");
         GameController.instance.onEnemyDestroyedCallback.Invoke();
         Destroy(this.transform.parent.gameObject);
-    }
-
-    IEnumerator FlashDamage()
-    {
-        for (int i = 0; i < 4; ++i)
-        {
-            meshRenderer.material = (i % 2 == 0) ? hitMat : regularMat;
-            yield return new WaitForSecondsRealtime(.15f);
-        }
-        meshRenderer.material = regularMat;
     }
 }

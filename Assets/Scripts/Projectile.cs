@@ -24,6 +24,7 @@ public class Projectile : MonoBehaviour
         {
             other.transform.parent.GetComponent<PlayerCombat>().TakeDamage(dmg);
             StopCoroutine(selfDestruct);
+            AudioController.instance.PlayAudio("IMPACT");
             Destroy(this.gameObject);
         }
     }

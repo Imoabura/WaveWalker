@@ -37,6 +37,7 @@ public class TargettingButton : MonoBehaviour
     {
         target.TakeDamage(damage);
         Instantiate(attackFX, target.transform.position - Vector3.up * 1f, Quaternion.identity);
+        AudioController.instance.PlayAudio("GEYSER");
         if (pressedRoutine == null)
         {
             pressedRoutine = StartCoroutine(DestroyUI(.15f));

@@ -49,7 +49,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8077913044952367810}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -110,7 +110,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 5
-  dmg: 1
   regularMat: {fileID: 2100000, guid: b9acac4641bf2354da0f9c79f91b942b, type: 2}
   hitMat: {fileID: 2100000, guid: 9afd1ad53e416af41a451f9e3f1b3279, type: 2}
 --- !u!1 &8077913046331559317
@@ -144,6 +143,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8077913044952367821}
+  - {fileID: 3959781616759681611}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -200,3 +200,65 @@ MonoBehaviour:
   tooCloseRange: 5
   projectilePrefab: {fileID: 4675458005224134726, guid: 003c736b484325d4e8de1b459f347dcc, type: 3}
   attackCooldown: 2
+--- !u!1001 &3141809898251824175
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8077913046331559316}
+    m_Modifications:
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119518748012322407, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+      propertyPath: m_Name
+      value: Waternado
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+--- !u!4 &3959781616759681611 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2119518748012322404, guid: fb98319996d4e4f42944e34955e8bd2a, type: 3}
+  m_PrefabInstance: {fileID: 3141809898251824175}
+  m_PrefabAsset: {fileID: 0}

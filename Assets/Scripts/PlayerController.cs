@@ -42,6 +42,10 @@ public class PlayerController : MonoBehaviour
     Vector3 camForward;
     Vector3 camRight;
 
+    Animator animController;
+
+    AudioSource source;
+
     public enum PlayerState
     {
         NORMAL,
@@ -56,6 +60,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        source = AudioController.instance.GetSource();
+
         rb = GetComponent<Rigidbody>();
         cam = Camera.main;
 
@@ -74,6 +80,8 @@ public class PlayerController : MonoBehaviour
         camRight = new Vector3(cam.transform.right.x, 0, cam.transform.right.z).normalized;
 
         dashIndicator.SetActive(false);
+
+        animController = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -101,7 +109,17 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(moveDir);
         }
 
+        if (movement != Vector3.zero)
+        {
+            if (!source.isPlaying)
+            {
+                AudioController.instance.PlayAudio("STEP", .3f);
+            }
+        }
+
         rb.velocity = movement + Vector3.up * rb.velocity.y;    // include y-velocity in player movement
+
+        animController.SetFloat("moveSpeed", movement.sqrMagnitude);
 
         LayerMask terrainMask = LayerMask.GetMask("Terrain");
 
